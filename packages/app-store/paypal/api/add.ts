@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { WEBAPP_URL } from "@calcom/lib/constants";
 import prisma from "@calcom/prisma";
 
 import { getAccessToken } from "../lib";
@@ -12,8 +13,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     select: {
       email: true,
       name: true,
+      id: true,
     },
   });
+
+  const redirect_uri = encodeURI(WEBAPP_URL + "/api/integrations/paypalpayment/callback");
 
   const headers = {
     Authorization: `Bearer ${await getAccessToken()}`,
@@ -21,6 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
   const body = {
     email: user?.email,
+    tracking_id: user?.id.toString(),
+    partner_config_override: {
+      return_url: redirect_uri,
+      return_url_description: "Return to Cal.com",
+    },
     operations: [
       {
         operation: "API_INTEGRATION",
