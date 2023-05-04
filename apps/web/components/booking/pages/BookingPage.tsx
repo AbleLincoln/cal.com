@@ -271,6 +271,8 @@ const BookingPage = ({
     onSuccess: async (responseData) => {
       const { uid } = responseData;
 
+      console.log(responseData);
+
       if ("paymentUid" in responseData && !!responseData.paymentUid) {
         return await router.push(
           createPaymentLink({

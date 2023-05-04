@@ -1,0 +1,20 @@
+{
+  "name": "PayPal",
+  "slug": "paypal",
+  "type": "paypal_payment",
+  "logo": "icon.svg",
+  "url": "https://example.com/link",
+  "variant": "payment",
+  "categories": [
+    "payment"
+  ],
+  "publisher": "Cal.com",
+  "email": "help@cal.com",
+  "description": "PayPal can be used to receive payments for bookings.",
+  "extendsFeature": "EventType",
+  "isTemplate": false,
+  "__createdUsingCli": true,
+  "imageSrc": "icon.svg",
+  "__template": "event-type-app-card",
+  "dirName": "paypal"
+}

@@ -28,6 +28,7 @@ const appStore = {
   exchangecalendar: import("./exchangecalendar"),
   facetime: import("./facetime"),
   sylapsvideo: import("./sylapsvideo"),
+  paypal: import("./paypal"),
 };
 
 export default appStore;

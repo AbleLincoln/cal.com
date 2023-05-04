@@ -159,7 +159,7 @@ const ELEMENT_STYLES_DARK: stripejs.Appearance = {
   },
 };
 
-export default function PaymentComponent(props: Props) {
+export default function StripePaymentComponent(props: Props) {
   const stripePromise = getStripe((props.payment.data as StripePaymentData).stripe_publishable_key);
   const paymentOption = props.payment.paymentOption;
   const [darkMode, setDarkMode] = useState<boolean>(false);

@@ -15,7 +15,8 @@ import { localStorage } from "@calcom/lib/webstorage";
 import { CreditCard } from "@calcom/ui/components/icon";
 
 import type { PaymentPageProps } from "../pages/payment";
-import PaymentComponent from "./Payment";
+import PaypalPaymentComponent from "./PaypalPayment";
+import StripePaymentComponent from "./StripePayment";
 
 const PaymentPage: FC<PaymentPageProps> = (props) => {
   const { t, i18n } = useLocale();
@@ -119,7 +120,7 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                     <div className="text-default mt-4 text-center dark:text-gray-300">{t("paid")}</div>
                   )}
                   {props.payment.appId === "stripe" && !props.payment.success && (
-                    <PaymentComponent
+                    <StripePaymentComponent
                       payment={props.payment}
                       eventType={props.eventType}
                       user={props.user}
@@ -127,6 +128,9 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                       bookingId={props.booking.id}
                       bookingUid={props.booking.uid}
                     />
+                  )}
+                  {props.payment.appId === "paypal" && !props.payment.success && (
+                    <PaypalPaymentComponent payment={props.payment} />
                   )}
                   {props.payment.refunded && (
                     <div className="text-default mt-4 text-center dark:text-gray-300">{t("refunded")}</div>
