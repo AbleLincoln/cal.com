@@ -4,7 +4,6 @@ import { getAccessToken } from "../lib";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { orderID } = req.query;
-  console.log({ orderID });
 
   const url = `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`;
   const headers = {

@@ -10,8 +10,6 @@ export class PaymentService implements IAbstractPaymentService {
     bookerEmail: string,
     paymentOption: PaymentOption
   ) {
-    console.log("creating PayPal payment");
-
     const paymentData = await prisma.payment.create({
       data: {
         uid: uuidv4(),

@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
 
-  const redirect_uri = encodeURI(WEBAPP_URL + "/api/integrations/paypalpayment/callback");
+  const redirect_uri = encodeURI(WEBAPP_URL + "/api/integrations/paypal/callback");
 
   const headers = {
     Authorization: `Bearer ${await getAccessToken()}`,

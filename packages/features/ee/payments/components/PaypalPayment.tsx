@@ -1,11 +1,20 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import type { Payment } from "@prisma/client";
+import { useRouter } from "next/router";
+
+import { bookingSuccessRedirect } from "@calcom/lib/bookingSuccessRedirect";
+
+import type { EventType } from ".prisma/client";
 
 type Props = {
   payment: Payment;
+  eventType: { id: number; successRedirectUrl: EventType["successRedirectUrl"] };
+  bookingUid: string;
 };
 
 export default function PaypalPaymentComponent(props: Props) {
+  const router = useRouter(); // we might be able to lift this up
+
   return (
     <PayPalScriptProvider
       options={{
@@ -30,7 +39,6 @@ export default function PaypalPaymentComponent(props: Props) {
             return id;
           }}
           onApprove={async ({ orderID }, actions) => {
-            console.log({ orderID });
             const response = await fetch(`/api/integrations/paypal/capture?orderID=${orderID}`, {
               method: "POST",
             });
@@ -67,6 +75,17 @@ export default function PaypalPaymentComponent(props: Props) {
             );
 
             // transaction completed :)
+            // TODO: handle web_conferencing details
+            const params: { [k: string]: any } = {
+              uid: props.bookingUid,
+              email: router.query.email,
+            };
+            return bookingSuccessRedirect({
+              router,
+              successRedirectUrl: props.eventType.successRedirectUrl,
+              query: params,
+              bookingUid: props.bookingUid,
+            });
           }}
         />
       </div>

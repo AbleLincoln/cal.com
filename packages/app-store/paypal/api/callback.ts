@@ -1,10 +1,7 @@
-import type { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { stringify } from "querystring";
 
 import prisma from "@calcom/prisma";
-
-import { getAccessToken } from "../lib";
 
 import getInstalledAppPath from "../../_utils/getInstalledAppPath";
 
@@ -18,12 +15,14 @@ function getReturnToValueFromQueryState(req: NextApiRequest) {
   return returnTo;
 }
 
+// http://localhost:3000/api/integrations/paypal/callback?merchantId=10&merchantIdInPayPal=79CLWH9ZEADY4&permissionsGranted=true&consentStatus=true&productIntentId=addipmt&productIntentID=addipmt&isEmailConfirmed=true&accountStatus=BUSINESS_ACCOUNT
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { merchantIdInPaypal, error} = req.query;
-  const partner_merchant_id = process.env.PARTNER_MERCHANT_ID;
+  const { merchantIdInPayPal, error } = req.query;
+  const partnerMerchantId = "79CLWH9ZEADY4"; // TODO: env var
 
   if (error) {
-    const query = stringify({ error});
+    const query = stringify({ error });
     res.redirect("/apps/installed?" + query);
     return;
   }
@@ -32,27 +31,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ message: "You must be logged in to do this" });
   }
 
-    // Track seller onboarding status
-  const headers = {
-    Authorization: `Bearer ${await getAccessToken()}`,
-    "Content-Type": "application/json",
-  }
+  // // Track seller onboarding status
+  // const headers = {
+  //   Authorization: `Bearer ${await getAccessToken()}`,
+  //   "Content-Type": "application/json",
+  // };
 
-  const response = await fetch(`https://api-m.sandbox.paypal.com/v1/customer/partners/${merchantIdInPaypal}/merchant-integrations/${partner_merchant_id}`, {
-    headers,
-    method: "GET"
-  });
+  // const response = await fetch(
+  //   `https://api-m.sandbox.paypal.com/v1/customer/partners/${partnerMerchantId}/merchant-integrations/${partnerMerchantId}`,
+  //   {
+  //     headers,
+  //     method: "GET",
+  //   }
+  // );
 
-  const {payments_receivable, primary_email_confirmed, oauth_third_party, merchant_id} = await response.json();
-  
-  if (!payments_receivable || !primary_email_confirmed || !oauth_third_party) {
-    // figure out whether to redirect to onboarding or to error page
-  }
+  // const { payments_receivable, primary_email_confirmed, oauth_third_party, merchant_id } =
+  //   await response.json();
+
+  // if (!payments_receivable || !primary_email_confirmed || !oauth_third_party) {
+  //   // figure out whether to redirect to onboarding or to error page
+  // }
 
   await prisma.credential.create({
     data: {
       type: "paypal_payment",
-      key: merchant_id,
+      key: {
+        merchant_id_in_paypal: merchantIdInPayPal,
+      }, //merchant_id, // TODO: i think this needs to be an object
       userId: req.session.user.id,
       appId: "paypal",
     },
