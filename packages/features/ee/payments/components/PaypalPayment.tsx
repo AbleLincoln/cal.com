@@ -24,7 +24,7 @@ export default function PaypalPaymentComponent(props: Props) {
         <PayPalButtons
           createOrder={async () => {
             const body = {
-              amount: props.payment.amount,
+              amount: props.payment.amount / 100,
               currency: props.payment.currency,
               intent: props.payment.paymentOption,
             };
